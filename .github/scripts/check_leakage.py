@@ -1,7 +1,7 @@
 """.github/scripts/check_leakage.py: Check project for copy/paste leakage.
 
 ALL-PY-REPOS
-Updated: 2026-08-17
+Updated: 2026-10-02
 
 Detects the copy-paste failure modes seen across the fleet:
   1. Identity mismatch: a metadata file naming a DIFFERENT project than the
@@ -115,7 +115,16 @@ def norm(name: str) -> str:
 
 
 def repo_name(root: Path) -> str:
-    """Return the repo name from the root path."""
+    """Return the project name from pyproject.toml."""
+    pyproject = root / "pyproject.toml"
+    if pyproject.is_file():
+        try:
+            text = pyproject.read_text(encoding="utf-8")
+            match = _PROJECT_NAME_RE.search(text)
+            if match:
+                return match.group(1)
+        except OSError, UnicodeDecodeError:
+            pass
     return root.resolve().name
 
 

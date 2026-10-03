@@ -164,57 +164,6 @@ wheels = [
 ]
 
 [[package]]
-name = "datafun-06-ml"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "composable-data-core" },
-    { name = "datafun-toolkit" },
-    { name = "matplotlib" },
-    { name = "ml-vizkit" },
-    { name = "pandas" },
-    { name = "scikit-learn" },
-    { name = "seaborn" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pre-commit" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "ruff" },
-    { name = "ty" },
-]
-docs = [
-    { name = "mkdocstrings", extra = ["python"] },
-    { name = "zensical" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "composable-data-core" },
-    { name = "datafun-toolkit" },
-    { name = "matplotlib" },
-    { name = "ml-vizkit" },
-    { name = "pandas" },
-    { name = "scikit-learn" },
-    { name = "seaborn" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pre-commit" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "ruff" },
-    { name = "ty" },
-]
-docs = [
-    { name = "mkdocstrings", extras = ["python"] },
-    { name = "zensical" },
-]
-
-[[package]]
 name = "datafun-toolkit"
 version = "1.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -610,6 +559,57 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ef/c8/389d353a4475ac67adac13cf6aa858b8dd290505d0f2999243fe0fdd2e91/ml_vizkit-0.1.0.tar.gz", hash = "sha256:32bcc19aa4836fd2b23da541e3f75404e5deeab72df87d21bef13a4c0b80b682", size = 13810, upload-time = "2026-08-21T00:17:36.745Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f1/cf/29a0121ea46069d6bbb9ba28e09307ec8a94bb789cd3b926368ee41fa85e/ml_vizkit-0.1.0-py3-none-any.whl", hash = "sha256:851adcc9d9ff468c4a00520cb278fd8c768f1145c2839a2d51132ff7deadcb8a", size = 11470, upload-time = "2026-08-21T00:17:35.618Z" },
+]
+
+[[package]]
+name = "module6"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "composable-data-core" },
+    { name = "datafun-toolkit" },
+    { name = "matplotlib" },
+    { name = "ml-vizkit" },
+    { name = "pandas" },
+    { name = "scikit-learn" },
+    { name = "seaborn" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pre-commit" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "ruff" },
+    { name = "ty" },
+]
+docs = [
+    { name = "mkdocstrings", extra = ["python"] },
+    { name = "zensical" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "composable-data-core" },
+    { name = "datafun-toolkit" },
+    { name = "matplotlib" },
+    { name = "ml-vizkit" },
+    { name = "pandas" },
+    { name = "scikit-learn" },
+    { name = "seaborn" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pre-commit" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "ruff" },
+    { name = "ty" },
+]
+docs = [
+    { name = "mkdocstrings", extras = ["python"] },
+    { name = "zensical" },
 ]
 
 [[package]]
