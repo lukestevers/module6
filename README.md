@@ -10,25 +10,17 @@
 [![Zensical docs](https://img.shields.io/badge/Zensical-docs-purple)](https://zensical.org/)
 [![MIT](https://img.shields.io/badge/license-see%20LICENSE-yellow.svg)](./LICENSE)
 
-> Professional Python project: linear regression and predictive analytics.
+> Professional Python project: linear regression and predictive analytics using MLB team-season data.
 
-## Project Goal
+## Project Question
 
-This project introduces **linear regression**, the process of
-fitting a model to data and using it to make predictions.
+**Can a team's batting average predict the number of regular-season wins it will have?**
 
-Think about two variables that might be related:
+This project applies a simple machine learning workflow to Major League Baseball team-season data.
 
-- Does study time predict exam scores?
-- Does temperature predict energy usage?
-- Does advertising spend predict revenue?
+The goal is to investigate whether team batting average provides useful information for predicting the number of regular-season wins.
 
-Your goal: run the example, read the code,
-and apply the same approach to a dataset and question of your own choosing.
-
-For data suggestions, please see [data/raw/README.md](data/raw/README.md).
-
-## Standard Process
+The project follows a standard predictive modeling process:
 
 ```text
 OBSERVE
@@ -43,163 +35,274 @@ VISUALIZE
 ASSESS
 ```
 
-Example:
+## About This Project
+
+This project is a custom application of a linear regression workflow to Major League Baseball team-season data.
+
+Rather than using the example dataset from the original project, I selected baseball data to investigate a question that interests me:
+
+**Can a team's batting average predict the number of regular-season wins it will have?**
+
+The project demonstrates data preparation, train/test splitting, baseline comparison, linear regression, prediction, evaluation, and visualization.
+
+## Key Findings
+
+The analysis found that team batting average has a positive relationship with regular-season wins, but batting average alone is not a strong enough predictor to accurately estimate a team's total wins.
+
+On the test data:
+
+- The mean baseline had an RMSE of **11.78 wins**.
+- The linear regression model had an RMSE of **10.61 wins**.
+- The linear regression model had an R-squared value of **0.186**.
+- The model provided an improvement over the baseline, but substantial variation in team wins remained unexplained.
+
+These results suggest that other factors are needed to build a more complete model of team success.
+
+## What I Learned
+
+This project helped me better understand the complete machine learning workflow from raw data through evaluation.
+
+I learned how to:
+
+- Select a feature and target based on a specific question.
+- Prepare real-world data for modeling.
+- Create a reproducible train/test split.
+- Compare a machine learning model against a baseline.
+- Interpret RMSE and R-squared.
+- Use prediction and residual plots to evaluate a regression model.
+- Recognize that a useful relationship between a feature and target does not necessarily mean that one feature is sufficient for accurate prediction.
+
+## Data
+
+The project uses MLB team-season data from the Lahman Baseball Database.
+
+The primary data file is:
 
 ```text
-TRAIN       LinearRegression
-PREDICT     on X_test
-EVALUATE    baseline vs model on y_test
+data/raw/Teams.csv
 ```
 
-## Important Folders and Files
+Each row represents one MLB team-season.
 
-- **data/raw** - raw data
-- **docs/** - project narrative and documentation\
-- **src/datafun** - supporting Python code
-- **pyproject.toml** - project configuration
-- **zensical.toml** - documentation configuration
+For this analysis, I used team seasons from **2000 through 2025**, excluding **2020** because it was a shortened 60-game season.
 
-## Common Workflow
+After filtering the data, the analysis contained:
 
-Follow the
-[step-by-step workflow guide](https://denisecase.github.io/pro-analytics-02/workflow-b-apply-example-project/)
-carefully.
+- **750 team-season observations**
+- **600 training observations**
+- **150 test observations**
 
-## Success
+### Data Source
 
-After completing Phase 1. **Start & Run**, you'll have the example project,
-running on your machine.
-A new file `project.log` will appear in the root project folder
-and running the example script will print out:
+The analysis uses the `Teams.csv` team-season dataset from the Lahman Baseball Database.
 
-```shell
-===================================
-END main() - Executed successfully!
-===================================
+## Variables
+
+### Feature
+
+The model uses team batting average:
+
+```text
+batting average = H / AB
 ```
 
-## Command Reference
+where:
 
-The commands below are used in the workflow guide above.
-They are provided here for convenience.
+- `H` = team hits
+- `AB` = team at-bats
 
-Follow the guide for the **full instructions**.
+### Target
 
-<details>
-<summary>Show command reference</summary>
+The target is:
 
-### In a machine terminal (open in your `Repos` folder)
-
-Open a machine terminal in your `Repos` folder:
-
-```shell
-git clone https://github.com/denisecase/datafun-06-ml
-
-cd datafun-06-ml
-code .
+```text
+W
 ```
 
-### In a VS Code terminal
+which represents the number of regular-season wins.
 
-These are listed for convenience.
-For best results, follow the detailed instructions in
-[pro-analytics-02 guide](https://denisecase.github.io/pro-analytics-02/).
+## Modeling Approach
 
-Use VS Code menu option `Terminal` / `New Terminal` to open a **VS Code terminal**
-in the root project folder.
-Copy each command, paste into your terminal, and hit ENTER,
-to run each command one at a time.
+The project uses a simple **LinearRegression** model from scikit-learn.
+
+The data is divided into:
+
+- **80% training data**
+- **20% testing data**
+
+A fixed random seed of `42` is used so the train/test split can be reproduced.
+
+A simple mean baseline is used for comparison. The baseline predicts the average number of wins from the training data for every test observation.
+
+The model then:
+
+1. Loads the MLB team-season data.
+2. Filters the data to 2000–2025 and excludes 2020.
+3. Calculates team batting average.
+4. Splits the data into training and testing sets.
+5. Creates a mean baseline.
+6. Trains a linear regression model.
+7. Makes predictions on the test data.
+8. Evaluates the baseline and model.
+9. Creates prediction and residual visualizations.
+
+## Results
+
+The model produced the following results on the test data:
+
+| Model | RMSE | R-squared |
+|---|---:|---:|
+| Mean baseline | 11.78 wins | -0.002 |
+| Linear regression | 10.61 wins | 0.186 |
+
+The linear regression model had a lower RMSE than the baseline.
+
+The model's R-squared value was **0.186**. In this test set, the model accounted for about **18.6% of the variation in wins**.
+
+The regression equation learned from the training data was approximately:
+
+```text
+W = 315.710 × batting_avg + 0.138
+```
+
+## Interpretation
+
+The results show a positive relationship between team batting average and regular-season wins.
+
+However, the prediction plot shows that the observations are fairly spread out around the regression line. The residual plot also shows substantial variation in prediction errors.
+
+Based on this analysis, team batting average provides some predictive information for regular-season wins, but batting average alone does not explain most of the variation in team wins.
+
+This demonstrates that a feature can have a relationship with a target without being sufficient by itself to make highly accurate predictions.
+
+## Visualizations
+
+### Batting Average and Wins
+
+![Team Batting Average vs. Regular-Season Wins](docs/images/baseball-batting-average-wins.png)
+
+This chart compares actual team wins in the test data with the wins predicted by the linear regression model.
+
+### Regression Residuals
+
+![Regression Residuals](docs/images/baseball-regression-residuals.png)
+
+This chart shows the difference between actual and predicted wins.
+
+Residuals above zero represent predictions that were too low, while residuals below zero represent predictions that were too high.
+
+## Next Steps
+
+A logical next step would be to investigate whether additional offensive statistics improve predictions.
+
+Potential features could include:
+
+- Runs
+- Home runs
+- Walks
+- Stolen bases
+- On-base percentage
+- Slugging percentage
+
+A future version of the project could compare several models or use multiple features to investigate whether team wins can be predicted more accurately.
+
+## Project Structure
+
+```text
+datafun-06-ml/
+├── data/
+│   └── raw/
+│       └── Teams.csv
+├── docs/
+│   └── images/
+│       ├── baseball-batting-average-wins.png
+│       └── baseball-regression-residuals.png
+├── src/
+│   └── datafun/
+│       └── app.py
+├── project.log
+├── pyproject.toml
+└── README.md
+```
+
+## How to Run
+
+This project uses Python 3.14 and `uv`.
+
+From the project root:
 
 ```shell
-uv self update
-uv python pin 3.14
-
-uv python install
-uv lock --upgrade
 uv sync
-
-uv run pre-commit install
-uv run pre-commit autoupdate
-
-git add -A
-uv run pre-commit run --all-files
-# repeat if changes were made by pre-commit tasks
-git add -A
-uv run pre-commit run --all-files
-
-# run the penguin example: is there a linear relationship?
-uv run python -m datafun.app
-
-# do chores
-uv run ruff format .
-uv run ruff check . --fix
-uv run ty check
-uv run python -m pytest
-uv run python -m zensical build
-
-# save progress as you work
-git add -A
-git commit -m "your message here"
-# repeat if changes were made (try the UP ARROW)
-git add -A
-git commit -m "your message here"
-
-git push -u origin main
 ```
 
-</details>
+Run the analysis with:
 
-## Helpful Tips
+```shell
+uv run python -m datafun.app
+```
 
-- Use the **UP ARROW** and **DOWN ARROW** in the terminal
-  to scroll through past commands.
-- Use `CTRL+f` to find (and replace) text within a file.
+The application will:
 
-## Much Can Be Ignored
+1. Load the MLB team-season data.
+2. Prepare the modeling data.
+3. Split the data into training and testing sets.
+4. Create a mean baseline.
+5. Train a linear regression model.
+6. Generate predictions.
+7. Evaluate the model.
+8. Create prediction and residual visualizations.
+9. Record the execution results in `project.log`.
 
-- You do not need to add to or modify `tests/`.
-  Tests are recommended and provided for example only.
-- Many files are silent helpers.
-  [Explore](https://denisecase.github.io/professional-python-project-explainer/)
-  as you like, but most files are never touched.
-- You do NOT need to understand everything;
-  let understanding build over time.
+## Development Commands
 
-## As Needed
+Format the project:
 
-If VS Code does not automatically use the new `.venv` environment:
+```shell
+uv run ruff format .
+```
 
-1. Open the Command Palette (`Ctrl+Shift+P`).
-2. Run **Python: Select Interpreter**.
-3. Select the interpreter from this project's `.venv` folder.
+Check the project with Ruff:
 
-If VS Code still does not recognize the environment or newly installed tools:
+```shell
+uv run ruff check . --fix
+```
 
-1. Open the Command Palette (`Ctrl+Shift+P`).
-2. Run **Developer: Reload Window**.
+Run type checking:
 
-## Troubleshooting >>>
+```shell
+uv run ty check
+```
 
-If you see something like this in your terminal: `>>>` or `...`
-You accidentally started Python interactive mode.
-It happens.
-Press `Ctrl c` (both keys together) or `Ctrl+Z` then `Enter` on Windows.
+Run tests:
 
-## Documentation
+```shell
+uv run python -m pytest
+```
 
-- [Documentation](https://denisecase.github.io/datafun-06-ml/)
+Build the documentation:
 
-## Data Card
+```shell
+uv run python -m zensical build
+```
 
-- [Palmer Penguins Data Card](./docs/data-card.md)
+## Git Workflow
 
-## Annotations
+Save changes with:
 
-- [.annotations/annotations.md](./.annotations/annotations.md)
+```shell
+git add -A
+git commit -m "Update project documentation"
+git push
+```
 
-## Citation
+## Project Files
 
-- [CITATION.cff](./CITATION.cff)
+- **`data/raw/Teams.csv`** - MLB team-season data used for the analysis
+- **`docs/`** - project documentation and visualizations
+- **`src/datafun/app.py`** - main Python application
+- **`project.log`** - log of the project execution
+- **`pyproject.toml`** - project configuration
+- **`zensical.toml`** - documentation configuration
 
 ## License
 
