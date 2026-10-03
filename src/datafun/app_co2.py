@@ -84,21 +84,15 @@ LOG: logging.Logger = get_logger("P06-CO2", level="DEBUG")
 
 # === LOCATE THE DATA FILE ===
 
-DATA_FILE_PATH: Final[Path] = (
-    Path("data") / "raw" / "owid-co2-data-subset.csv"
-)
+DATA_FILE_PATH: Final[Path] = Path("data") / "raw" / "owid-co2-data-subset.csv"
 
 # === LOCATE THE CHART OUTPUT ===
 
 CHART_DIR: Final[Path] = Path("docs") / "images"
 
-PREDICTION_CHART_PATH: Final[Path] = (
-    CHART_DIR / "co2-regression-predictions.png"
-)
+PREDICTION_CHART_PATH: Final[Path] = CHART_DIR / "co2-regression-predictions.png"
 
-RESIDUAL_CHART_PATH: Final[Path] = (
-    CHART_DIR / "co2-regression-residuals.png"
-)
+RESIDUAL_CHART_PATH: Final[Path] = CHART_DIR / "co2-regression-residuals.png"
 
 # === DETERMINE WHAT ONE ROW REPRESENTS ===
 
@@ -273,9 +267,7 @@ def main() -> None:
         TARGET_COLUMN,
     ]
 
-    df_model: pd.DataFrame = df.dropna(
-        subset=required_columns
-    ).copy()
+    df_model: pd.DataFrame = df.dropna(subset=required_columns).copy()
 
     count_original: int = df.shape[0]
     count_model: int = df_model.shape[0]
@@ -330,9 +322,7 @@ def main() -> None:
         y_train,
     )
 
-    baseline_predictions: np.ndarray = baseline_model.predict(
-        X_test
-    )
+    baseline_predictions: np.ndarray = baseline_model.predict(X_test)
 
     baseline_rmse: float = float(
         root_mean_squared_error(
@@ -350,9 +340,7 @@ def main() -> None:
 
     LOG.info(f"Baseline strategy: {BASELINE_STRATEGY}")
     LOG.info(f"Baseline RMSE: {baseline_rmse:.2f}")
-    LOG.info(
-        f"Baseline R-squared: {baseline_r_squared:.3f}"
-    )
+    LOG.info(f"Baseline R-squared: {baseline_r_squared:.3f}")
 
     LOG.info("-------------------------------")
     LOG.info("06. TRAIN a LinearRegression model.")
@@ -371,11 +359,7 @@ def main() -> None:
     intercept: float = float(model.intercept_)
 
     LOG.info("The model learned this line:")
-    LOG.info(
-        f"{TARGET_COLUMN} = "
-        f"{slope:.6g} * {FEATURE_COLUMN} "
-        f"+ {intercept:.6g}"
-    )
+    LOG.info(f"{TARGET_COLUMN} = {slope:.6g} * {FEATURE_COLUMN} + {intercept:.6g}")
 
     LOG.info("-------------------------------")
     LOG.info("07. PREDICT on X_test.")
@@ -385,13 +369,9 @@ def main() -> None:
     # Use the trained model to predict target values
     # for these held-back observations.
 
-    model_predictions: np.ndarray = model.predict(
-        X_test
-    )
+    model_predictions: np.ndarray = model.predict(X_test)
 
-    LOG.info(
-        f"Predictions created: {len(model_predictions)}"
-    )
+    LOG.info(f"Predictions created: {len(model_predictions)}")
 
     LOG.info("-------------------------------")
     LOG.info("08. EVALUATE baseline vs model on y_test.")
@@ -421,15 +401,11 @@ def main() -> None:
 
     LOG.info("BASELINE RESULTS")
     LOG.info(f"RMSE:      {baseline_rmse:.2f}")
-    LOG.info(
-        f"R-squared: {baseline_r_squared:.3f}"
-    )
+    LOG.info(f"R-squared: {baseline_r_squared:.3f}")
 
     LOG.info("LINEAR REGRESSION RESULTS")
     LOG.info(f"RMSE:      {model_rmse:.2f}")
-    LOG.info(
-        f"R-squared: {model_r_squared:.3f}"
-    )
+    LOG.info(f"R-squared: {model_r_squared:.3f}")
 
     LOG.info("-------------------------------")
     LOG.info("09. VISUALIZE predictions and residuals.")
@@ -446,9 +422,7 @@ def main() -> None:
 
     _prediction_figure, prediction_ax = plt.subplots()
 
-    x_test_values: np.ndarray = (
-        X_test[FEATURE_COLUMN].to_numpy()
-    )
+    x_test_values: np.ndarray = X_test[FEATURE_COLUMN].to_numpy()
     y_test_values: np.ndarray = y_test.to_numpy()
 
     prediction_ax.scatter(
@@ -460,9 +434,7 @@ def main() -> None:
     # Sort x values so the regression line
     # is drawn from left to right.
 
-    prediction_order: np.ndarray = np.argsort(
-        x_test_values
-    )
+    prediction_order: np.ndarray = np.argsort(x_test_values)
 
     prediction_ax.plot(
         x_test_values[prediction_order],
@@ -473,15 +445,9 @@ def main() -> None:
     # CUSTOM: The analyst can customize
     # the returned Matplotlib Axes object.
 
-    prediction_ax.set_title(
-        "GDP vs. CO2 Emissions"
-    )
-    prediction_ax.set_xlabel(
-        "GDP"
-    )
-    prediction_ax.set_ylabel(
-        "CO2 Emissions"
-    )
+    prediction_ax.set_title("GDP vs. CO2 Emissions")
+    prediction_ax.set_xlabel("GDP")
+    prediction_ax.set_ylabel("CO2 Emissions")
     prediction_ax.legend()
 
     save_chart(
@@ -489,10 +455,7 @@ def main() -> None:
         PREDICTION_CHART_PATH,
     )
 
-    LOG.info(
-        f"Chart saved successfully at "
-        f"{PREDICTION_CHART_PATH}."
-    )
+    LOG.info(f"Chart saved successfully at {PREDICTION_CHART_PATH}.")
 
     # === RESIDUAL CHART ===
 
@@ -503,9 +466,7 @@ def main() -> None:
     # Residuals near zero indicate predictions
     # close to the observed target values.
 
-    residuals: np.ndarray = (
-        y_test_values - model_predictions
-    )
+    residuals: np.ndarray = y_test_values - model_predictions
 
     _residual_figure, residual_ax = plt.subplots()
 
@@ -521,25 +482,16 @@ def main() -> None:
     # CUSTOM: The analyst can customize
     # the returned Matplotlib Axes object.
 
-    residual_ax.set_title(
-        "Residuals for GDP Model"
-    )
-    residual_ax.set_xlabel(
-        "GDP"
-    )
-    residual_ax.set_ylabel(
-        "Residual (Actual - Predicted CO2 Emissions)"
-    )
+    residual_ax.set_title("Residuals for GDP Model")
+    residual_ax.set_xlabel("GDP")
+    residual_ax.set_ylabel("Residual (Actual - Predicted CO2 Emissions)")
 
     save_chart(
         residual_ax,
         RESIDUAL_CHART_PATH,
     )
 
-    LOG.info(
-        f"Chart saved successfully at "
-        f"{RESIDUAL_CHART_PATH}."
-    )
+    LOG.info(f"Chart saved successfully at {RESIDUAL_CHART_PATH}.")
 
     LOG.info("-------------------------------")
     LOG.info("10. ASSESS the results.")
@@ -570,14 +522,8 @@ def main() -> None:
     Next, I would like to try ...
     """)
 
-    LOG.info(
-        "In a script, call plt.show() at the end "
-        "to display all charts."
-    )
-    LOG.info(
-        "Close all chart windows "
-        "(with the close button) to continue."
-    )
+    LOG.info("In a script, call plt.show() at the end to display all charts.")
+    LOG.info("Close all chart windows (with the close button) to continue.")
 
     plt.show()
 
@@ -590,4 +536,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

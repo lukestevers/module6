@@ -274,9 +274,7 @@ def main() -> None:
     # Keep only modern MLB seasons with comparable regular-season
     # schedules. Exclude 2020 because it was a shortened season.
     df_model: pd.DataFrame = df[
-        (df["yearID"] >= 2000)
-        & (df["yearID"] <= 2025)
-        & (df["yearID"] != 2020)
+        (df["yearID"] >= 2000) & (df["yearID"] <= 2025) & (df["yearID"] != 2020)
     ].copy()
 
     # Calculate team batting average.
@@ -288,9 +286,7 @@ def main() -> None:
         TARGET_COLUMN,
     ]
 
-    df_model = df_model.dropna(
-        subset=required_columns
-    ).copy()
+    df_model = df_model.dropna(subset=required_columns).copy()
 
     # Log row counts.
     count_original: int = df.shape[0]
@@ -354,9 +350,7 @@ def main() -> None:
         y_train,
     )
 
-    baseline_predictions: np.ndarray = baseline_model.predict(
-        X_test
-    )
+    baseline_predictions: np.ndarray = baseline_model.predict(X_test)
 
     baseline_rmse: float = float(
         root_mean_squared_error(
@@ -397,10 +391,7 @@ def main() -> None:
     intercept: float = float(model.intercept_)
 
     LOG.info("The model learned this line:")
-    LOG.info(
-        f"{TARGET_COLUMN} = "
-        f"{slope:.3f} * {FEATURE_COLUMN} + {intercept:.3f}"
-    )
+    LOG.info(f"{TARGET_COLUMN} = {slope:.3f} * {FEATURE_COLUMN} + {intercept:.3f}")
 
     # ============================================================
     # 07. PREDICT
@@ -415,9 +406,7 @@ def main() -> None:
     # for these held-back observations.
     model_predictions: np.ndarray = model.predict(X_test)
 
-    LOG.info(
-        f"Predictions created: {len(model_predictions)}"
-    )
+    LOG.info(f"Predictions created: {len(model_predictions)}")
 
     # ============================================================
     # 08. EVALUATE
@@ -472,9 +461,7 @@ def main() -> None:
     # Plot the actual test observations.
     _prediction_figure, prediction_ax = plt.subplots()
 
-    x_test_values: np.ndarray = X_test[
-        FEATURE_COLUMN
-    ].to_numpy()
+    x_test_values: np.ndarray = X_test[FEATURE_COLUMN].to_numpy()
 
     y_test_values: np.ndarray = y_test.to_numpy()
 
@@ -486,9 +473,7 @@ def main() -> None:
 
     # Sort x values so the regression line
     # is drawn from left to right.
-    prediction_order: np.ndarray = np.argsort(
-        x_test_values
-    )
+    prediction_order: np.ndarray = np.argsort(x_test_values)
 
     prediction_ax.plot(
         x_test_values[prediction_order],
@@ -496,15 +481,9 @@ def main() -> None:
         label="Predicted",
     )
 
-    prediction_ax.set_title(
-        "Team Batting Average vs. Regular-Season Wins"
-    )
-    prediction_ax.set_xlabel(
-        "Team Batting Average"
-    )
-    prediction_ax.set_ylabel(
-        "Regular-Season Wins"
-    )
+    prediction_ax.set_title("Team Batting Average vs. Regular-Season Wins")
+    prediction_ax.set_xlabel("Team Batting Average")
+    prediction_ax.set_ylabel("Regular-Season Wins")
     prediction_ax.legend()
 
     save_chart(
@@ -512,10 +491,7 @@ def main() -> None:
         PREDICTION_CHART_PATH,
     )
 
-    LOG.info(
-        f"Chart saved successfully at "
-        f"{PREDICTION_CHART_PATH}."
-    )
+    LOG.info(f"Chart saved successfully at {PREDICTION_CHART_PATH}.")
 
     # === RESIDUAL CHART ===
 
@@ -525,11 +501,9 @@ def main() -> None:
     # Residuals near zero indicate predictions
     # close to the observed target values.
 
-    residuals: np.ndarray = (
-        y_test_values - model_predictions
-    )
+    residuals: np.ndarray = y_test_values - model_predictions
 
-    residual_figure, residual_ax = plt.subplots()
+    _, residual_ax = plt.subplots()
 
     residual_ax.scatter(
         x_test_values,
@@ -539,25 +513,16 @@ def main() -> None:
     # Draw a horizontal reference line at zero.
     residual_ax.axhline(0)
 
-    residual_ax.set_title(
-        "Residuals for Batting Average Model"
-    )
-    residual_ax.set_xlabel(
-        "Team Batting Average"
-    )
-    residual_ax.set_ylabel(
-        "Residual (Actual - Predicted Wins)"
-    )
+    residual_ax.set_title("Residuals for Batting Average Model")
+    residual_ax.set_xlabel("Team Batting Average")
+    residual_ax.set_ylabel("Residual (Actual - Predicted Wins)")
 
     save_chart(
         residual_ax,
         RESIDUAL_CHART_PATH,
     )
 
-    LOG.info(
-        f"Chart saved successfully at "
-        f"{RESIDUAL_CHART_PATH}."
-    )
+    LOG.info(f"Chart saved successfully at {RESIDUAL_CHART_PATH}.")
 
     # ============================================================
     # 10. ASSESS
@@ -605,18 +570,15 @@ offensive statistics improves the predictions."""
     # DISPLAY
     # ============================================================
 
-    LOG.info(
-        "In a script, call plt.show() at the end to display all charts."
-    )
-    LOG.info(
-        "Close all chart windows (with the close button) to continue."
-    )
+    LOG.info("In a script, call plt.show() at the end to display all charts.")
+    LOG.info("Close all chart windows (with the close button) to continue.")
 
     plt.show()
 
     LOG.info("===================================")
     LOG.info("END main() - Executed successfully!")
     LOG.info("===================================")
+
 
 # === CONDITIONAL EXECUTION GUARD ===
 
